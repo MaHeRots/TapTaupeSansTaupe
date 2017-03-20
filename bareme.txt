@@ -1,0 +1,36 @@
+cours-src.com/flash-s4
+	-> jeu-correction.zip --> zip de correction avec la version JS du superHero
+
+-> a rendre par mail le lundi 20 mars 2017
+	-> par email : cedric.devassine@gmail.com
+ 	-> précisez votre nom et votre groupe dans le mail (dans l'objet du mail aussi ... ) ;)
+ 	
+Bareme : /20 (ça peut changer mais dans l'idée ... )
+	
+	Animation / 20 (soyez original !)
+		- Anim ouverture (intro) / 10
+		- Anim diverses dans le jeu / 5
+			-> (quand on tape, environnement, etc .. )
+		- Anim de fin de jeu / 5  -> jeu se cloture a 60secondes
+
+		- Ambiance générale ............... /5
+			(graphisme, originalité, etc) 		
+
+		- Tête générale de votre code ..... /5
+			(organisation, logique, etc)		
+
+		- Bug ou pas Bug ? ................ /2
+			( jeu fonctionnel ? ou pas ? )	
+
+		- A la fin, écran de fin .......... /3
+			(avoir un écran qui affiche le score à la fin de partie)
+
+		- Fonction Rejouer  ............... /3
+			(je dois pouvoir rejouer x fois sans soucis) 
+
+		- Fonction Compte à rebours  ...... /2
+			(limiter le jeu avec une horloge de 60secondes par partie)
+
+		
+
+

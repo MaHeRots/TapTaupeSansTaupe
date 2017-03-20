@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tape ta taupe</title>
+
+
+    <script src="libraries/easeljs-0.8.2.min.js"></script>
+    <script src="libraries/tweenjs-0.6.2.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'bowlby_oneregular';
+            src: url('assets/fonts/bowlbyone-regular-webfont.woff2') format('woff2'),
+            url('assets/fonts/bowlbyone-regular-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+
+        }
+
+        #taptap{
+            background:url(assets/fond.jpg);
+            background-size:cover;    
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="taptap" width="800" height="500">
+        Navigateur trop ancien, pas de support de Canvas
+    </canvas>
+
+    <script src="utils.js"></script>
+    <script src="game-assets.js"></script>
+    <script src="game2.js"></script>
+    <script> initGame(); </script>
+
+
+</body>
+</html>

@@ -6,7 +6,7 @@ var home;
 var duree="60";
 
 function initGame(){
-	console.log('init game');
+	//console.log('init game');
 	stage = new createjs.Stage("taptap");
     window.stage = stage;
     
@@ -34,6 +34,7 @@ function initGame(){
     score = new Score();
     //score.create();
     
+    end = new EndScreen();
 //    temps = new Temps();
     
     game.startHome();
@@ -47,7 +48,8 @@ function GameLogic() {
 
     var obj = {
         startHome: _startHome,
-        startGame: _startGame
+        startGame: _startGame,
+        endGame: _endGame,
     };
     return obj;
 
@@ -58,20 +60,27 @@ function GameLogic() {
         ennemis.destroy();
         marteau.destroy();
         score.destroy();
-//        temps.destroy();
         stage.removeAllEventListeners("stagemousedown");
     }
 
     function _startGame() {
         home.destroy();
-//        score.create();
+        end.destroy();
         ennemis.create(); //permet l'affichage de la fonction
         marteau.create(); //permet l'affichage de la fonction
         score.create();
-//        temps.create();
         stage.on("stagemousedown", function (e) {
             e.preventDefault();
         });
+    }
+    
+    function _endGame(score) {
+        end.create(score);
+        score.destroy();
+        ennemis.destroy(); //permet l'affichage de la fonction
+        marteau.destroy(); //permet l'affichage de la fonction
+
+        stage.removeAllEventListeners("stagemousedown");
     }
 }
 
@@ -97,13 +106,15 @@ function Ennemis() {
         create : _create,
         currentEnnemi: null,
         destroy: _destroy,
+        onTouched : _onTouched,
+        isVisible : _isVisible,
     };
     return obj;
 
     //////////////////////
 
     function _create() {
-        console.log('create bonhomme !');
+        //console.log('create bonhomme !');
         if (!_container){
             _container = new createjs.Container();
 
@@ -149,26 +160,30 @@ function Ennemis() {
         }
 
     }
-    
-    function _onTouched() {
-        marteau.locked = true;
-        obj.currentEnnemi.scaleX = obj.currentEnnemi.scaleY = 1;
 
-        createjs.Tween.get(obj.currentEnnemi)
-            .to({scaleX: 1.5, scaleY: 1.5}, 300, createjs.Ease.quartOut)
-            .to({scaleX: 1, scaleY: 1}, 800, createjs.Ease.elasticOut)
-            .call(function () {
+    function _onTouched() {
+            //console.log(_currentEnnemi.name);
+            marteau.locked = true;
+            _currentEnnemi.scaleX = _currentEnnemi.scaleY = 1;
+
+            createjs.Tween.get(_currentEnnemi)
+                .to({scaleX: 1.5, scaleY: 1.5}, 300, createjs.Ease.quartOut)
+                .to({scaleX: 1, scaleY: 1}, 800, createjs.Ease.elasticOut)
+                .call(function () {
                 marteau.locked = false;
             });
+            if ( _isVisible() ) {
 
-        if (obj.currentEnnemi.name == "cochon") {
-            //COCHON !!
-            score.update(-20);
-        } else {
-            //MONSTRE !!!
-            score.update(10);
+                if (_currentEnnemi.name == "friend") {
+                    //COCHON !!
+                    score.update(-20);
+                } else {
+                    //MONSTRE !!!
+                    score.update(10);
+                }      
+            }
         }
-    } 
+
 
 /*    function _update() {
         //ici on gerera le mouvement du héro (haut , bas, etc)
@@ -218,13 +233,14 @@ function Ennemis() {
 
     }
     
+    function _isVisible () { return _isHidden }
+    
     function _destroy() {
         if (_container) {
-            stage.removeChild(obj.container);
+            stage.removeChild(_container);
             _container = null;
         }
     }
-
 }
 
 
@@ -246,7 +262,7 @@ function Marteau() {
     //////////////////////
 
     function _create() {
-        console.log('create ennemis !');
+        //console.log('create ennemis !');
 
         _container = new createjs.Container();
 
@@ -261,20 +277,22 @@ function Marteau() {
         _container.y = 100;
         
         stage.on("stagemousedown", function(){
-            console.log('TAP !!');
-          
+            if ( marteau.locked ) return;
+            //console.log('TAP !!');
+            ennemis.onTouched();
             createjs.Tween.get(beer)
             .to({rotation : -60}, 300, createjs.Ease.quartOut)
             .to({rotation : 0}, 400, createjs.Ease.quartOut)
             .call(function(){
-                console.log('animation finie');
+                //console.log('animation finie');
             });
+            
         });
     }
     
     function _destroy() {
         if (_container) {
-            stage.removeChild(obj.container);
+            stage.removeChild(_container);
             _container = null;
         }
     }
@@ -292,9 +310,6 @@ function Marteau() {
             if (checkCollision2(MyBeer, ennemis.currentEnnemi)) {
                 //on empêche de frapper plus
                 _container.removeChildAt(i);
-                
-                //Ennemi touché
-                ennemis.onTouched();
             }
         } 
     }
@@ -307,12 +322,14 @@ function Marteau() {
 function Score() {
     var _text;
     var _score = 0;
+    var _timeLeft = 99;
     //////////////////////
 
     var obj = {
         create: _create,
         destroy: _destroy,
-        update: _update
+        update: _update,
+        initTime: _initTime
     };
     return obj;
 
@@ -324,6 +341,7 @@ function Score() {
         _text.y = 20;
         _text.textAlign = "center";
         stage.addChild(_text);
+        _initTime();
     }
 
     function _destroy() {
@@ -335,8 +353,24 @@ function Score() {
 
     function _update(score) {
         _score += score;
-        _text.text = "Score : " + _score;
+        _text.text = "Score : " + _score + " | Temps restant : " + _timeLeft
     }
+    
+    function _initTime() {
+        _timeLeft = 3
+        var timer = setInterval(function() {
+            _calculateTime(timer)
+            }, 1000)
+        }
+    
+    function _calculateTime(timer) {
+        _timeLeft--;
+        if ( _timeLeft == 0) {
+            clearInterval(timer);
+            game.endGame(_score)
+        }
+        _text.text = "Score : " + _score + " | Temps restant : " + _timeLeft;
+    } 
 
 }
 
@@ -426,18 +460,95 @@ function HomeScreen() {
     }
 }
 
+function EndScreen() {
 
-                
-//function Temps(){
-//    var compteur=document.getElementById('compteur');
-//    s=duree;
-//    if(s<0){
-//        compteur.innerHTML="terminé<br />"+"<a href='#'>continuer</a>"
-//    }
-//    if(s<10){
-//        s="0"+s;
-//    }
-//    compteur.innerHTML= s;
-//    duree=duree-1;
-//    window.setTimeout("t();",999);
-//}
+    var _container;
+    var _btnStart;
+    //////////////////////
+
+    var obj = {
+        create: _create,
+        destroy: _destroy
+    };
+    return obj;
+
+    //////////////////////
+
+    function _create(score) {
+        _destroy();
+        _container = new createjs.Container("#ffffff");
+        _container.x = stage.canvas.width / 2;
+        _container.y = stage.canvas.height / 2;
+
+        var text, animation, spriteSheet;
+
+        text = new createjs.Text("Finis", "50px bowlby_oneregular", "#000000");
+        text.y = -70;
+        text.textAlign = "center";
+        _container.addChild(text);
+
+        
+        text = new createjs.Text("Tu as obtenu un score de : " + score,"20px bowlby_oneregular","#000000");
+        text.textAlign = "center";
+        text.alpha = 0;
+        text.scaleX = text.scaleY = 4;
+        _container.addChild(text);
+
+        createjs.Tween.get(text)
+            .wait(500)
+            .to({y: 0,
+                 alpha : 1,
+                 scaleX :1,
+                 scaleY : 1}, 1000, createjs.Ease.quartOut);
+        
+        createjs.Tween.get(text)
+            .to({y: 800}, 0, createjs.Ease.quartOut)
+            .wait(300)
+            .to({y: -70}, 1000, createjs.Ease.quartOut);
+
+        createjs.Tween.get(text)
+            .to({y: 800}, 0, createjs.Ease.quartOut)
+            .wait(500)
+            .to({y: 0}, 1000, createjs.Ease.quartOut);
+
+
+
+        //btn
+        var background = new createjs.Shape();
+        background.name = "background";
+        background.graphics.beginFill("#6a7bff").drawRoundRect(-70, -30, 140, 60, 10);
+
+        var label = new createjs.Text("RESTART", "20px bowlby_oneregular", "#FFFFFF");
+        label.name = "label";
+        label.textAlign = "center";
+        label.textBaseline = "middle";
+
+        _btnStart = new createjs.Container();
+        _btnStart.name = "button";
+        _btnStart.y = 120;
+        _btnStart.addChild(background, label);
+        _btnStart.mouseChildren = false;
+        _container.addChild(_btnStart);
+        _btnStart.addEventListener('click', _onClickStart);
+
+        createjs.Tween.get(_btnStart)
+            .to({y: 800}, 0)
+            .wait(500)
+            .to({y: 120}, 1000, createjs.Ease.quadInOut);
+
+        stage.addChild(_container);
+    }
+
+    function _destroy() {
+        if (_container) {
+            _btnStart.removeAllEventListeners();
+            stage.removeChild(_container);
+            _container = null;
+            _btnStart = null;
+        }
+    }
+
+    function _onClickStart() {
+        game.startGame();
+    }
+}

@@ -5,32 +5,33 @@ cours-src.com/flash-s4
 	-> par email : cedric.devassine@gmail.com
  	-> prÃ©cisez votre nom et votre groupe dans le mail (dans l'objet du mail aussi ... ) ;)
  	
-Bareme : /20 (Ã§a peut changer mais dans l'idÃ©e ... )
+Bareme : /20 (Ça peut changer mais dans l'idée ... )
 	
 	Animation / 20 (soyez original !)
 		- Anim ouverture (intro) / 10
 		- Anim diverses dans le jeu / 5
 			-> (quand on tape, environnement, etc .. )
-		- Anim de fin de jeu / 5  -> jeu se cloture a 60secondes
+		- Anim de fin de jeu / 5  -> jeu se clôture a 60secondes
 
-		- Ambiance gÃ©nÃ©rale ............... /5
-			(graphisme, originalitÃ©, etc) 		
+	- Ambiance générale ............... /5
+			(graphisme, originalité, etc) 		
 
-		- TÃªte gÃ©nÃ©rale de votre code ..... /5
+	- Tête générale de votre code ..... /5
 			(organisation, logique, etc)		
 
-		- Bug ou pas Bug ? ................ /2
+	- Bug ou pas Bug ? ................ /2
 			( jeu fonctionnel ? ou pas ? )	
 
-		- A la fin, Ã©cran de fin .......... /3
-			(avoir un Ã©cran qui affiche le score Ã  la fin de partie)
+	- A la fin, écran de fin .......... /3
+			(avoir un écran qui affiche le score à la fin de partie)
 
-		- Fonction Rejouer  ............... /3
+	- Fonction Rejouer  ............... /3
 			(je dois pouvoir rejouer x fois sans soucis) 
 
-		- Fonction Compte Ã  rebours  ...... /2
+	- Fonction Compte à rebours  ...... /2
 			(limiter le jeu avec une horloge de 60secondes par partie)
 
 		
+
 
 
